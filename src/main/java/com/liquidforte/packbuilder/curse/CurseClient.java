@@ -185,6 +185,9 @@ public class CurseClient {
 			modsDir.toFile().mkdirs();
 		}
 		Path path = getDestination(input, modsDir);
+		if (path.toFile().exists()) {
+			return;
+		}
 
 		Mod mod = getMod(getProjectName(input.getProjectId()));
 		WebTarget target = getLatestFileTarget(mod.getName());
