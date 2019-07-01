@@ -1,8 +1,8 @@
 apply from: "${gradleDir}/repositories.gradle"
 apply plugin: 'java-base'
 
-sourceCompatibility = JavaVersion.VERSION_12
-targetCompatibility = JavaVersion.VERSION_12
+sourceCompatibility = JavaVersion.VERSION_8
+targetCompatibility = JavaVersion.VERSION_8
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
