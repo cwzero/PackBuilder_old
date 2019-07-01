@@ -15,6 +15,10 @@ public class CurseClientConfig {
 		return curseforgeBaseUrl;
 	}
 	
+	public String getCurseForgeUrl() {
+		return getCurseforgeBaseUrl() + getModsPath();
+	}
+	
 	public String getModsPath() {
 		return modsPath;
 	}

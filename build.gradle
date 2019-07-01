@@ -14,11 +14,20 @@ apply from: "${gradleDir}/java-library.gradle"
 apply from: "${gradleDir}/maven-publish.gradle"
 
 group = 'com.liquidforte'
-version = '0.0.8'
+version = '0.0.9'
+
+apply plugin: 'application'
+mainClassName = 'com.liquidforte.packbuilder.main.Main'
 
 jar {
     manifest {
         attributes 'Main-Class': 'com.liquidforte.packbuilder.main.Main',
         	'Class-Path': configurations.compile.collect { it.getName() }.join(' ')
     }
+}
+
+run {
+	workingDir 'run'
+	//args 'update', 'manifest.json', 'updated.json'
+	args 'download', 'updated.json', 'mods'
 }

@@ -1,5 +1,6 @@
 package com.liquidforte.packbuilder.curse.data;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,9 @@ public class Mod {
 
 	@JsonProperty("versions")
 	private Map<String, List<File>> versions = new HashMap<>();
+	
+	@JsonProperty("files")
+	private List<File> files = new ArrayList<>();
 
 	/**
 	 * No args constructor for use in serialization
@@ -176,14 +180,54 @@ public class Mod {
 	public void setVersions(Map<String, List<File>> versions) {
 		this.versions = versions;
 	}
+	
+	@JsonProperty("files")
+	public List<File> getFiles() {
+		return files;
+	}
+	
+	@JsonProperty("files")
+	public void setFiles(List<File> files) {
+		this.files = files;
+	}
 
-	public File getLatestFile(String version) {
-		List<File> v = getVersions().get(version);
-
-		v.sort((File a, File b) -> {
-			return a.getUploadedAt().before(b.getUploadedAt()) ? 1 : -1;
+	public File getLatestFile(String[] versions) {
+		System.out.println("Getting latest file for " + getName());
+		
+		List<File> f = getFiles();
+		
+		f.sort((File a, File b) -> {
+			return a.getUploadedAt().before(b.getUploadedAt()) ? 1 : -1;			
 		});
+		
 
-		return v.get(0);
+		for (String version: versions) {
+			for (File file: f) {
+				if (file.getVersions().contains(version)) {
+					return file;
+				}
+			}
+		}
+		
+		for (String version: versions) {
+			if (!getVersions().containsKey(version)) {
+				continue;
+			} else {
+				List<File> v = getVersions().get(version);
+
+				v.sort((File a, File b) -> {
+					return a.getUploadedAt().before(b.getUploadedAt()) ? 1 : -1;
+				});
+
+				return v.get(0);				
+			}			
+		}
+		
+		System.out.println("Error! Mod " +  getName() + " did not contain requested version. Available:");
+		for (String version: getVersions().keySet()) {
+			System.out.println("Version: \"" + version + "\"");
+		}
+		
+		return null;
 	}
 }

@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import com.google.inject.Inject;
 import com.liquidforte.packbuilder.curse.data.CurseFile;
+import com.liquidforte.packbuilder.curse.data.File;
 import com.liquidforte.packbuilder.curse.data.Mod;
 
 public class CurseClient {
@@ -24,6 +25,8 @@ public class CurseClient {
 	private WebTarget apiMods;
 	private WebTarget mods;
 	private WebTarget root;
+
+	private String[] versions = { "1.12.2", "1.12.1", "1.12" };
 
 	public CurseClient() {
 
@@ -123,7 +126,7 @@ public class CurseClient {
 		long projectId = getProjectId(name);
 		Mod result = getMod(name);
 
-		long fileId = result.getLatestFile("1.12.2").getId();
+		long fileId = result.getLatestFile(versions).getId();
 
 		return getFileName(projectId, fileId);
 	}
@@ -132,14 +135,15 @@ public class CurseClient {
 		long projectId = getProjectId(name);
 		Mod result = getMod(name);
 
-		long fileId = result.getLatestFile("1.12.2").getId();
+		long fileId = result.getLatestFile(versions).getId();
 
 		return getFileTarget(projectId, fileId);
 	}
 
 	public long getLatestFileId(String name) {
 		Mod result = getMod(name);
-		return result.getLatestFile("1.12.2").getId();
+		File file = result.getLatestFile(versions);
+		return file.getId();
 	}
 
 	public String[] getLocation(URL url) throws IOException {
@@ -167,9 +171,11 @@ public class CurseClient {
 	public CurseFile update(CurseFile input) throws IOException {
 		String name = getProjectName(input.getProjectId());
 
+		long fileId = getLatestFileId(name);
+
 		CurseFile output = new CurseFile();
 		output.setProjectId(input.getProjectId());
-		output.setFileId(getLatestFileId(name));
+		output.setFileId(fileId);
 		output.setName(name);
 
 		return output;
@@ -181,16 +187,20 @@ public class CurseClient {
 	}
 
 	public void download(CurseFile input, Path modsDir) throws IOException {
-		if (!modsDir.toFile().exists() || !modsDir.toFile().isDirectory()) {
-			modsDir.toFile().mkdirs();
-		}
 		Path path = getDestination(input, modsDir);
 		if (path.toFile().exists()) {
 			return;
 		}
+		
+		if (input.getName() != null) {
+			System.out.println("Downloading " + input.getName());
+		} else {
+			String name = getProjectName(input.getProjectId());
+			input.setName(name);
+			System.out.println("Downloading " + name);
+		}
 
-		Mod mod = getMod(getProjectName(input.getProjectId()));
-		WebTarget target = getLatestFileTarget(mod.getName());
+		WebTarget target = getFileTarget(input.getProjectId(), input.getFileId());
 
 		Response response = target.request().get();
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
