@@ -1,7 +1,8 @@
 package com.liquidforte.packbuilder.main;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.google.inject.Guice;
@@ -14,12 +15,18 @@ public class Main {
 		Injector injector = Guice.createInjector(new PackBuilderModule());
 		PackBuilder packBuilder = injector.getInstance(PackBuilder.class);
 
-		InputStream input = Main.class.getClassLoader().getResourceAsStream("update.json");
+		String mode = args[0].trim().toLowerCase();
+		Path manifest = Paths.get(args[1]);
+		Path target = Paths.get(args[2]);
 
 		try {
-			packBuilder.downloadModpack(input, Paths.get("mods"));
-		} catch (IOException e) {
-			e.printStackTrace();
+			if (mode.equals("update")) {
+				packBuilder.updateManifest(Files.newInputStream(manifest), Files.newOutputStream(target));
+			} else if (mode.equals("download")) {
+				packBuilder.downloadModpack(Files.newInputStream(manifest), target);
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 }
