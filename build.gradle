@@ -16,4 +16,4 @@ apply plugin: 'application'
 mainClassName = 'com.liquidforte.packbuilder.main.Main'
 
 group = 'com.liquidforte'
-version = '0.0.5'
+version = '0.0.6'
