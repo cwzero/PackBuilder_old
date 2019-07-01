@@ -12,8 +12,12 @@ apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.spring.dependency-management'
 apply from: "${gradleDir}/java-library.gradle"
 apply from: "${gradleDir}/maven-publish.gradle"
-apply plugin: 'application'
-mainClassName = 'com.liquidforte.packbuilder.main.Main'
 
 group = 'com.liquidforte'
 version = '0.0.6'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.liquidforte.packbuilder.main.Main'
+    }
+}
