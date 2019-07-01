@@ -1,0 +1,9 @@
+apply from: "${gradleDir}/java-base.gradle"
+apply plugin: 'java'
+
+apply from: "${gradleDir}/test.gradle"
+apply from: "${gradleDir}/logging.gradle"
+apply from: "${gradleDir}/inject.gradle"
+
+apply from: "${gradleDir}/jackson.gradle"
+apply from: "${gradleDir}/jersey.gradle"

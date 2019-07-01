@@ -1,0 +1,1 @@
+apply from: "${gradleDir}/log4j.gradle"

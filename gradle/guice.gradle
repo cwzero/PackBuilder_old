@@ -1,0 +1,23 @@
+apply from: "${gradleDir}/guava.gradle"
+
+ext {
+    guiceVersion = '4.2.2'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'com.google.inject', name: 'guice', version: guiceVersion
+        dependency group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: guiceVersion
+        dependency group: 'com.google.inject.extensions', name: 'guice-grapher', version: guiceVersion
+        dependency group: 'com.google.inject.extensions', name: 'guice-jndi', version: guiceVersion
+        dependency group: 'com.google.inject.extensions', name: 'guice-multibindings', version: guiceVersion
+    }
+}
+
+dependencies {
+    compile group: 'com.google.inject', name: 'guice'
+    compile group: 'com.google.inject.extensions', name: 'guice-assistedinject'
+    compile group: 'com.google.inject.extensions', name: 'guice-grapher'
+    compile group: 'com.google.inject.extensions', name: 'guice-jndi'
+    compile group: 'com.google.inject.extensions', name: 'guice-multibindings'
+}

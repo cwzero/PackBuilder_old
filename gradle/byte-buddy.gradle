@@ -1,0 +1,15 @@
+ext {
+    byteBuddyVersion = '1.9.13'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'net.bytebuddy', name: 'byte-buddy', version: byteBuddyVersion
+        dependency group: 'net.bytebuddy', name: 'byte-buddy-agent', version: byteBuddyVersion
+    }
+}
+
+dependencies {
+    testCompile group: 'net.bytebuddy', name: 'byte-buddy', version: byteBuddyVersion
+    testCompile group: 'net.bytebuddy', name: 'byte-buddy-agent', version: byteBuddyVersion
+}

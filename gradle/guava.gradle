@@ -1,0 +1,13 @@
+ext {
+    guavaVersion = '28.0-jre'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'com.google.guava', name: 'guava', version: guavaVersion
+    }
+}
+
+dependencies {
+    compile group: 'com.google.guava', name: 'guava'
+}

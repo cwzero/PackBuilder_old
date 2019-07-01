@@ -1,0 +1,15 @@
+ext {
+    log4jVersion = '2.12.0'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.apache.logging.log4j:log4j:${log4jVersion}"
+    }
+}
+
+dependencies {
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-iostreams'
+    runtimeOnly group: 'org.apache.logging.log4j', name: 'log4j-core'
+}

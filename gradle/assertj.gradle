@@ -1,0 +1,18 @@
+ext {
+    assertjCoreVersion = '3.12.2'
+    assertjDbVersion = '1.2.0'
+    assertjGuavaVersion = '3.2.1'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'org.assertj', name: 'assertj-core', version: assertjCoreVersion
+        dependency group: 'org.assertj', name: 'assertj-db', version: assertjDbVersion
+        dependency group: 'org.assertj', name: 'assertj-guava', version: assertjGuavaVersion
+    }
+}
+
+dependencies {
+    testCompile group: 'org.assertj', name: 'assertj-core'
+    testCompile group: 'org.assertj', name: 'assertj-guava'
+}

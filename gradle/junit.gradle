@@ -1,0 +1,23 @@
+ext {
+    junitJupiterVersion = '5.5.0'
+    junitPlatformVersion = '1.5.0'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitJupiterVersion
+        dependency group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitJupiterVersion
+        dependency group: 'org.junit.platform', name: 'junit-platform-launcher', version: junitPlatformVersion
+    }
+}
+
+dependencies {
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+    testCompile group: 'org.junit.platform', name: 'junit-platform-launcher'
+}
+
+test {
+    testLogging.showStandardStreams = true
+    useJUnitPlatform()
+}

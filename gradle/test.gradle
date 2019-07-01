@@ -1,0 +1,3 @@
+apply from: "${gradleDir}/junit.gradle"
+apply from: "${gradleDir}/assertj.gradle"
+apply from: "${gradleDir}/mockito.gradle"

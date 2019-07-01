@@ -1,0 +1,14 @@
+ext {
+    objenesisVersion = '3.0.1'
+}
+
+dependencyManagement {
+    dependencies {
+        dependency group: 'org.objenesis', name: 'objenesis', version: objenesisVersion
+    }
+}
+
+dependencies {
+    compile group: 'org.objenesis', name: 'objenesis'
+    testCompile group: 'org.objenesis', name: 'objenesis'
+}
