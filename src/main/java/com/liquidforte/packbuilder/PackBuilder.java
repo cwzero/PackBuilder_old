@@ -30,7 +30,7 @@ public class PackBuilder {
 	public Modpack updateModpack(Modpack input) throws IOException {
 		Modpack output = new Modpack();
 
-		Executor exec = Executors.newCachedThreadPool();
+		Executor exec = Executors.newFixedThreadPool(8);
 
 		for (CurseFile file : input.getFiles()) {
 			exec.execute(() -> {
@@ -44,6 +44,11 @@ public class PackBuilder {
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
+				}
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			});
 		}
@@ -62,17 +67,22 @@ public class PackBuilder {
 		
 		Modpack modpack = loadModpack(input);
 
-		Executor exec = Executors.newCachedThreadPool();
-
+		Executor exec = Executors.newFixedThreadPool(8);
+		
 		for (CurseFile file : modpack.getFiles()) {
-			//exec.execute(() -> {
+			exec.execute(() -> {
 				try {
 					curseClient.download(file, modsDir);
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
 				}
-			//});
+			});
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

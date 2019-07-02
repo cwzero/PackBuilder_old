@@ -147,7 +147,6 @@ public class CurseClient {
 	}
 
 	public String[] getLocation(URL url) throws IOException {
-		System.out.println("URL: " + url.toString());
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setInstanceFollowRedirects(false);
 		conn.connect();
