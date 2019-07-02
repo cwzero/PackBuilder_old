@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -30,47 +31,51 @@ public class PackBuilder {
 	public Modpack updateModpack(Modpack input) throws IOException {
 		Modpack output = new Modpack();
 
-		Executor exec = Executors.newFixedThreadPool(8);
+		ExecutorService exec = Executors.newFixedThreadPool(8);
 
 		for (CurseFile file : input.getFiles()) {
 			exec.execute(() -> {
 				CurseFile result;
+
 				try {
 					result = curseClient.update(file);
 					if (result.getFileId() != file.getFileId()) {
 						System.out.println("Updated " + result.getName());
+						output.getFiles().add(result);
+					} else {
+						output.getFiles().add(file);
 					}
-					output.getFiles().add(result);
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 			});
 		}
+
+		exec.shutdown();
+		try {
+			exec.awaitTermination(60, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		exec.shutdownNow();
 
 		return output;
 	}
 
 	public void updateManifest(InputStream input, OutputStream output) throws IOException {
 		objectMapper.writerFor(Modpack.class).writeValue(output, updateModpack(loadModpack(input)));
-		output.flush();
-		output.close();
 	}
 
 	public void downloadModpack(InputStream input, Path modsDir) throws IOException {
 		if (!modsDir.toFile().exists() || !modsDir.toFile().isDirectory()) {
 			modsDir.toFile().mkdirs();
 		}
-		
+
 		Modpack modpack = loadModpack(input);
 
-		Executor exec = Executors.newFixedThreadPool(8);
-		
+		ExecutorService exec = Executors.newFixedThreadPool(8);
+
 		for (CurseFile file : modpack.getFiles()) {
 			exec.execute(() -> {
 				try {
@@ -80,11 +85,14 @@ public class PackBuilder {
 					System.exit(1);
 				}
 			});
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
+
+		exec.shutdown();
+		try {
+			exec.awaitTermination(60, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		exec.shutdownNow();
 	}
 }

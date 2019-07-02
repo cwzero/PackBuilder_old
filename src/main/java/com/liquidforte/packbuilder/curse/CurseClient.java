@@ -1,10 +1,8 @@
 package com.liquidforte.packbuilder.curse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.ws.rs.client.Client;
@@ -16,6 +14,7 @@ import com.google.inject.Inject;
 import com.liquidforte.packbuilder.curse.data.CurseFile;
 import com.liquidforte.packbuilder.curse.data.File;
 import com.liquidforte.packbuilder.curse.data.Mod;
+import com.liquidforte.packbuilder.util.DownloadHelper;
 
 public class CurseClient {
 	private Client client;
@@ -28,24 +27,13 @@ public class CurseClient {
 
 	private String[] versions = { "1.12.2", "1.12.1", "1.12" };
 
-	public CurseClient() {
-
-	}
-
-	public CurseClient(CurseClientConfig config) {
-		this();
-		this.config = config;
-	}
-
-	public CurseClient(Client client) {
-		this();
-		this.client = client;
-	}
+	private DownloadHelper downloadHelper;
 
 	@Inject
-	public CurseClient(Client client, CurseClientConfig config) {
-		this(client);
+	public CurseClient(Client client, CurseClientConfig config, DownloadHelper downloadHelper) {
+		this.client = client;
 		this.config = config;
+		this.downloadHelper = downloadHelper;
 	}
 
 	public Client getClient() {
@@ -170,6 +158,7 @@ public class CurseClient {
 
 	public CurseFile update(CurseFile input) throws IOException {
 		String name = getProjectName(input.getProjectId());
+		input.setName(name);
 
 		long fileId = getLatestFileId(name);
 
@@ -186,7 +175,7 @@ public class CurseClient {
 		return modsDir.resolve(fileName);
 	}
 
-	public void download(CurseFile input, Path modsDir) throws IOException {		
+	public void download(CurseFile input, Path modsDir) throws IOException {
 		if (input.getName() != null) {
 			System.out.println("Downloading " + input.getName());
 		} else {
@@ -194,20 +183,15 @@ public class CurseClient {
 			input.setName(name);
 			System.out.println("Downloading " + name);
 		}
-		
+
 		Path path = getDestination(input, modsDir);
 		if (path.toFile().exists()) {
 			return;
 		}
 
-		WebTarget target = getFileTarget(input.getProjectId(), input.getFileId());
-		
-		target = client.target(target.getUri().toString().replace(' ', '+'));
+		String uri = "https://www.curseforge.com/minecraft/mc-mods/" + input.getProjectId() + "/download/"
+				+ input.getFileId() + "/file";
 
-		Response response = target.request().get();
-		if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-			InputStream in = response.readEntity(InputStream.class);
-			Files.copy(in, path);
-		}
+		downloadHelper.download(uri, path);
 	}
 }

@@ -21,9 +21,9 @@ public class ClientConfigProvider implements Provider<ClientConfig> {
 	@Override
 	public ClientConfig get() {
 		ClientConfig clientConfig = new ClientConfig();
+		clientConfig.register(RedirectSpacesFilter.class);
 		clientConfig.register(JacksonFeature.class);
 		clientConfig.register(mapperProvider);
-		clientConfig.register(RedirectSpacesFilter.class);
 		return clientConfig;
 	}
 }

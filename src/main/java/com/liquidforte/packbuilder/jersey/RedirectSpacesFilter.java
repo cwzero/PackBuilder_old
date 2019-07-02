@@ -12,16 +12,25 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class RedirectSpacesFilter implements ClientResponseFilter {
+public class RedirectSpacesFilter implements ClientResponseFilter {	
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-		if (responseContext.getStatusInfo().getFamily() != Response.Status.Family.REDIRECTION)
+		/*if (responseContext.getStatusInfo().getFamily() != Response.Status.Family.REDIRECTION)
 			return;
+			*/
 
 		Response resp;
 		try {
+			URI u = responseContext.getLocation();
+			if (u == null) {
+				return;
+			}
+			String uri = responseContext.getLocation().toString();
+			String adjusted = uri.replace(' ', '+');
+			System.out.println("URI: " + uri);
+			System.out.println("Adjusted: " + adjusted);
 			resp = requestContext.getClient()
-					.target(new URI(responseContext.getLocation().toString().replace(' ', '+'))).request()
+					.target(new URI(adjusted)).request()
 					.method(requestContext.getMethod());
 
 			responseContext.setEntityStream((InputStream) resp.getEntity());
