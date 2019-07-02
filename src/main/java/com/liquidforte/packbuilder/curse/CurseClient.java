@@ -147,6 +147,7 @@ public class CurseClient {
 	}
 
 	public String[] getLocation(URL url) throws IOException {
+		System.out.println("URL: " + url.toString());
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setInstanceFollowRedirects(false);
 		conn.connect();
@@ -186,12 +187,7 @@ public class CurseClient {
 		return modsDir.resolve(fileName);
 	}
 
-	public void download(CurseFile input, Path modsDir) throws IOException {
-		Path path = getDestination(input, modsDir);
-		if (path.toFile().exists()) {
-			return;
-		}
-		
+	public void download(CurseFile input, Path modsDir) throws IOException {		
 		if (input.getName() != null) {
 			System.out.println("Downloading " + input.getName());
 		} else {
@@ -199,8 +195,15 @@ public class CurseClient {
 			input.setName(name);
 			System.out.println("Downloading " + name);
 		}
+		
+		Path path = getDestination(input, modsDir);
+		if (path.toFile().exists()) {
+			return;
+		}
 
 		WebTarget target = getFileTarget(input.getProjectId(), input.getFileId());
+		
+		target = client.target(target.getUri().toString().replace(' ', '+'));
 
 		Response response = target.request().get();
 		if (response.getStatus() == Response.Status.OK.getStatusCode()) {

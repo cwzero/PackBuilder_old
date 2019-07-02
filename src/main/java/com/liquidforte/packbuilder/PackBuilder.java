@@ -65,14 +65,14 @@ public class PackBuilder {
 		Executor exec = Executors.newCachedThreadPool();
 
 		for (CurseFile file : modpack.getFiles()) {
-			exec.execute(() -> {
+			//exec.execute(() -> {
 				try {
 					curseClient.download(file, modsDir);
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.exit(1);
 				}
-			});
+			//});
 		}
 	}
 }
