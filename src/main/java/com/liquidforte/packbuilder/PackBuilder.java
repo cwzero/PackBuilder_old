@@ -58,6 +58,8 @@ public class PackBuilder {
 
 	public void updateManifest(InputStream input, OutputStream output) throws IOException {
 		objectMapper.writerFor(Modpack.class).writeValue(output, updateModpack(loadModpack(input)));
+		output.flush();
+		output.close();
 	}
 
 	public void downloadModpack(InputStream input, Path modsDir) throws IOException {
