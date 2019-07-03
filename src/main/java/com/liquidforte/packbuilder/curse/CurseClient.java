@@ -154,8 +154,10 @@ public class CurseClient {
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setInstanceFollowRedirects(false);
 		conn.connect();
-
-		return conn.getHeaderField("Location").split("/");
+		
+		String location = conn.getHeaderField("Location");
+		System.out.println("Location: " + location);
+		return location.split("/");
 	}
 
 	public String getFileName(long projectId, long fileId) throws IOException {
@@ -192,12 +194,9 @@ public class CurseClient {
 	}
 
 	public void download(CurseFile input, Path modsDir) throws IOException {
-		if (input.getName() != null) {
-			System.out.println("Downloading " + input.getName());
-		} else {
+		if (input.getName() == null) {
 			String name = getProjectName(input.getProjectId());
 			input.setName(name);
-			System.out.println("Downloading " + name);
 		}
 
 		Path path = getDestination(input, modsDir);
@@ -208,6 +207,7 @@ public class CurseClient {
 		String uri = "https://www.curseforge.com/minecraft/mc-mods/" + input.getProjectId() + "/download/"
 				+ input.getFileId() + "/file";
 
+		System.out.println("Downloading " + input.getName());
 		downloadHelper.download(uri, path);
 	}
 }
