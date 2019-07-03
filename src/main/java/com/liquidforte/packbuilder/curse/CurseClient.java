@@ -201,7 +201,7 @@ public class CurseClient {
 		}
 
 		Path path = getDestination(input, modsDir);
-		if (path.toFile().exists()) {
+		if (path.toFile().exists() && path.toFile().length() == getFileSize(input.getProjectId(), input.getFileId())) {
 			return;
 		}
 
@@ -209,7 +209,5 @@ public class CurseClient {
 				+ input.getFileId() + "/file";
 
 		downloadHelper.download(uri, path);
-		
-		assert path.toFile().length() == getFileSize(input.getProjectId(), input.getFileId());
 	}
 }
