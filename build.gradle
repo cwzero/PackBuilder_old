@@ -14,7 +14,7 @@ apply from: "${gradleDir}/java-library.gradle"
 apply from: "${gradleDir}/maven-publish.gradle"
 
 group = 'com.liquidforte'
-version = '0.0.15'
+version = '0.0.16'
 
 apply plugin: 'application'
 mainClassName = 'com.liquidforte.packbuilder.main.Main'

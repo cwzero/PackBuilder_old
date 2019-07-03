@@ -54,11 +54,10 @@ public class PackBuilder {
 
 		exec.shutdown();
 		try {
-			exec.awaitTermination(60, TimeUnit.SECONDS);
+			exec.awaitTermination(10, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		exec.shutdownNow();
 
 		return output;
 	}
@@ -91,10 +90,9 @@ public class PackBuilder {
 
 		exec.shutdown();
 		try {
-			exec.awaitTermination(60, TimeUnit.SECONDS);
+			exec.awaitTermination(10, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		exec.shutdownNow();
 	}
 }

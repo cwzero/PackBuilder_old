@@ -22,7 +22,7 @@ public class File {
 	@JsonProperty("downloads")
 	private long downloads;
 	@JsonProperty("filesize")
-	private String filesize;
+	private long filesize;
 	@JsonProperty("id")
 	private long id;
 	@JsonProperty("name")
@@ -57,7 +57,7 @@ public class File {
 	 * @param url
 	 * @param version
 	 */
-	public File(long id, String url, String name, String type, String version, String filesize, List<String> versions,
+	public File(long id, String url, String name, String type, String version, long filesize, List<String> versions,
 			long downloads, Date uploadedAt) {
 		super();
 		this.id = id;
@@ -82,7 +82,7 @@ public class File {
 	}
 
 	@JsonProperty("filesize")
-	public String getFilesize() {
+	public long getFilesize() {
 		return filesize;
 	}
 
@@ -132,7 +132,7 @@ public class File {
 	}
 
 	@JsonProperty("filesize")
-	public void setFilesize(String filesize) {
+	public void setFilesize(long filesize) {
 		this.filesize = filesize;
 	}
 

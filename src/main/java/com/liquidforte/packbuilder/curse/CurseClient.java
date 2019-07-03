@@ -70,6 +70,22 @@ public class CurseClient {
 		String name = getProjectName(projectId);
 		return getModTarget(name).path("download").path("" + fileId).path("file");
 	}
+	
+	public File getFile(long projectId, long fileId) throws IOException {
+		String name = getProjectName(projectId);
+		Mod mod = getMod(name);
+		for (File file: mod.getFiles()) {
+			if (file.getId() == fileId) {
+				return file;
+			}
+		}
+		return null;		
+	}
+	
+	public long getFileSize(long projectId, long fileId) throws IOException {
+		File file = getFile(projectId, fileId);
+		return file.getFilesize();		
+	}
 
 	public WebTarget getApiRoot() {
 		if (apiRoot == null) {
@@ -193,5 +209,7 @@ public class CurseClient {
 				+ input.getFileId() + "/file";
 
 		downloadHelper.download(uri, path);
+		
+		assert path.toFile().length() == getFileSize(input.getProjectId(), input.getFileId());
 	}
 }
