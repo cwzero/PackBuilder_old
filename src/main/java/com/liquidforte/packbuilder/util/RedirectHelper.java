@@ -69,6 +69,6 @@ public class RedirectHelper {
 		String suffix = url.substring(url.lastIndexOf('/') + 1);
 		String suffixDecoded = URLDecoder.decode(suffix, "UTF-8");
 		String suffixReplace = suffixDecoded.replace(" ", "+");
-		return prefix + suffixReplace;
+		return prefix + suffixDecoded;
 	}
 }
