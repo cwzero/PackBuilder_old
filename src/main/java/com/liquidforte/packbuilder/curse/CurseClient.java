@@ -1,7 +1,7 @@
 package com.liquidforte.packbuilder.curse;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -9,6 +9,13 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.protocol.RedirectLocations;
+import org.apache.hc.core5.http.protocol.BasicHttpContext;
+import org.apache.hc.core5.http.protocol.HttpContext;
 
 import com.google.inject.Inject;
 import com.liquidforte.packbuilder.curse.data.CurseFile;
@@ -70,21 +77,21 @@ public class CurseClient {
 		String name = getProjectName(projectId);
 		return getModTarget(name).path("download").path("" + fileId).path("file");
 	}
-	
+
 	public File getFile(long projectId, long fileId) throws IOException {
 		String name = getProjectName(projectId);
 		Mod mod = getMod(name);
-		for (File file: mod.getFiles()) {
+		for (File file : mod.getFiles()) {
 			if (file.getId() == fileId) {
 				return file;
 			}
 		}
-		return null;		
+		return null;
 	}
-	
+
 	public long getFileSize(long projectId, long fileId) throws IOException {
 		File file = getFile(projectId, fileId);
-		return file.getFilesize();		
+		return file.getFilesize();
 	}
 
 	public WebTarget getApiRoot() {
@@ -110,7 +117,7 @@ public class CurseClient {
 	}
 
 	public String getProjectUrl(long projectId) {
-		return this.config.getCurseforgeBaseUrl() + projectId + "?cookieTest=1";
+		return this.config.getCurseforgeBaseUrl() + projectId;
 	}
 
 	public Mod getMod(String name) {
@@ -151,13 +158,19 @@ public class CurseClient {
 	}
 
 	public String[] getLocation(URL url) throws IOException {
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setInstanceFollowRedirects(false);
-		conn.connect();
-		
-		String location = conn.getHeaderField("Location");
-		System.out.println("Location: " + location);
-		return location.split("/");
+		HttpGet httpGet = new HttpGet(url.toString());
+		HttpContext context = new BasicHttpContext();
+		HttpClient client = HttpClients.createDefault();
+		try {
+			client.execute(httpGet, context);
+			RedirectLocations locations = (RedirectLocations) context.getAttribute("http.protocol.redirect-locations");
+			URI result = locations.getAll().get(0);
+			return result.toString().split("/");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public String getFileName(long projectId, long fileId) throws IOException {
@@ -170,7 +183,6 @@ public class CurseClient {
 		String[] path = getLocation(url);
 
 		String name = path[5];
-		name = name.substring(0, name.indexOf("?cookieTest=1"));
 		return name;
 	}
 

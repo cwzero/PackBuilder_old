@@ -10,23 +10,23 @@ public class CurseClientConfig {
 	private String curseforgeBaseUrl = CURSEFORGE_BASE_URL;
 	private String modsPath = MODS_PATH;
 	private String rootUrl = ROOT_URL;
-	
+
 	public String getCurseforgeBaseUrl() {
 		return curseforgeBaseUrl;
 	}
-	
+
 	public String getCurseForgeUrl() {
 		return getCurseforgeBaseUrl() + getModsPath();
 	}
-	
+
 	public String getModsPath() {
 		return modsPath;
 	}
-	
+
 	public String getApiRootUrl() {
 		return apiRootUrl;
 	}
-	
+
 	public String getRootUrl() {
 		return rootUrl;
 	}

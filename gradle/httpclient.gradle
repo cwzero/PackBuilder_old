@@ -1,0 +1,14 @@
+ext {
+	httpClientVersion = '5.0-beta5'
+}
+
+
+dependencyManagement {
+    dependencies {
+    	dependency group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: httpClientVersion
+    }
+}
+
+dependencies {
+	compile group: 'org.apache.httpcomponents.client5', name: 'httpclient5'
+}
