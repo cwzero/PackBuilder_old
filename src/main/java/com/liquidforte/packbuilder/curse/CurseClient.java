@@ -1,7 +1,6 @@
 package com.liquidforte.packbuilder.curse;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -10,18 +9,12 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.protocol.RedirectLocations;
-import org.apache.hc.core5.http.protocol.BasicHttpContext;
-import org.apache.hc.core5.http.protocol.HttpContext;
-
 import com.google.inject.Inject;
 import com.liquidforte.packbuilder.curse.data.CurseFile;
 import com.liquidforte.packbuilder.curse.data.File;
 import com.liquidforte.packbuilder.curse.data.Mod;
 import com.liquidforte.packbuilder.util.DownloadHelper;
+import com.liquidforte.packbuilder.util.RedirectHelper;
 
 public class CurseClient {
 	private Client client;
@@ -158,13 +151,9 @@ public class CurseClient {
 	}
 
 	public String[] getLocation(URL url) throws IOException {
-		HttpGet httpGet = new HttpGet(url.toString());
-		HttpContext context = new BasicHttpContext();
-		HttpClient client = HttpClients.createDefault();
 		try {
-			client.execute(httpGet, context);
-			RedirectLocations locations = (RedirectLocations) context.getAttribute("http.protocol.redirect-locations");
-			URI result = locations.getAll().get(0);
+			URL result = RedirectHelper.getRedirect(url.toString());
+
 			return result.toString().split("/");
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -175,7 +164,7 @@ public class CurseClient {
 
 	public String getFileName(long projectId, long fileId) throws IOException {
 		String[] path = getLocation(getFileTarget(projectId, fileId).getUri().toURL());
-		return path[path.length - 1];
+		return path[path.length - 1].replace("+", " ");
 	}
 
 	public String getProjectName(long projectId) throws IOException {

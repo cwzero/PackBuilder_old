@@ -1,19 +1,10 @@
 package com.liquidforte.packbuilder.test;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Paths;
 
 import javax.ws.rs.client.Client;
 
-import org.apache.hc.client5.http.classic.HttpClient;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.client5.http.protocol.RedirectLocations;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.protocol.BasicHttpContext;
-import org.apache.hc.core5.http.protocol.HttpContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,8 +41,27 @@ public class PackBuilderTest {
 		CurseFile test = new CurseFile();
 		test.setProjectId(32274);
 		test.setFileId(2755458);
+
 		try {
 			curseClient.download(test, Paths.get("./mods"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testEncoding() {
+		CurseFile bibliocraft = new CurseFile();
+		bibliocraft.setProjectId(228027);
+		bibliocraft.setFileId(2574880);
+
+		CurseFile harvestcraft = new CurseFile();
+		harvestcraft.setProjectId(221857);
+		harvestcraft.setFileId(2717443);
+
+		try {
+			curseClient.download(bibliocraft, Paths.get("./mods"));
+			curseClient.download(harvestcraft, Paths.get("./mods"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
