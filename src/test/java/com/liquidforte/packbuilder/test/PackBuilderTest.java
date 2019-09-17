@@ -66,4 +66,22 @@ public class PackBuilderTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testFailure() {
+		CurseFile journeymap = new CurseFile();
+		journeymap.setProjectId(32274);
+		journeymap.setFileId(2755458);
+		
+		CurseFile wands = new CurseFile();
+		wands.setProjectId(235595);
+		wands.setFileId(2705633);
+
+		try {
+			curseClient.download(journeymap, Paths.get("./mods"));
+			curseClient.download(wands, Paths.get("./mods"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -201,6 +201,11 @@ public class CurseClient {
 		}
 
 		Path path = getDestination(input, modsDir);
+		
+		if (path.toFile().exists() && path.toFile().length() != getFileSize(input.getProjectId(), input.getFileId())) {
+			path.toFile().delete();
+		}
+		
 		if (path.toFile().exists() && path.toFile().length() == getFileSize(input.getProjectId(), input.getFileId())) {
 			return;
 		}
