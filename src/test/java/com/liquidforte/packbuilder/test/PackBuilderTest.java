@@ -78,7 +78,9 @@ public class PackBuilderTest {
 		wands.setFileId(2705633);
 
 		try {
+			journeymap = curseClient.update(journeymap);
 			curseClient.download(journeymap, Paths.get("./mods"));
+			wands = curseClient.update(wands);
 			curseClient.download(wands, Paths.get("./mods"));
 		} catch (IOException e) {
 			e.printStackTrace();

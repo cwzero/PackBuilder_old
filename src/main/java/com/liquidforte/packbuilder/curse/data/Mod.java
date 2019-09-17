@@ -203,7 +203,7 @@ public class Mod {
 
 		for (String version: versions) {
 			for (File file: f) {
-				if (file.getVersions().contains(version)) {
+				if (file.getVersions().contains(version) && file.getType().equalsIgnoreCase("release")) {
 					return file;
 				}
 			}
