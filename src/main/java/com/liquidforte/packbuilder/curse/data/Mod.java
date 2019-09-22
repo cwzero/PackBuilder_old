@@ -1,6 +1,7 @@
 package com.liquidforte.packbuilder.curse.data;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,15 +197,14 @@ public class Mod {
 		
 		List<File> f = getFiles();
 		
-		f.sort((File a, File b) -> {
-			return a.getUploadedAt().before(b.getUploadedAt()) ? 1 : -1;			
-		});
+		File result = null;
+		Date resultDate = new Date(0);
 		
-
 		for (String version: versions) {
 			for (File file: f) {
-				if (file.getVersions().contains(version) && file.getType().equalsIgnoreCase("release")) {
-					return file;
+				if (file.getVersions().contains(version) && file.getUploadedAt().after(resultDate)) {
+					result = file;
+					resultDate = file.getUploadedAt();
 				}
 			}
 		}
@@ -214,13 +214,20 @@ public class Mod {
 				continue;
 			} else {
 				List<File> v = getVersions().get(version);
-
-				v.sort((File a, File b) -> {
-					return a.getUploadedAt().before(b.getUploadedAt()) ? 1 : -1;
-				});
-
-				return v.get(0);				
+				
+				for (String ver: versions) {
+					for (File file: v) {
+						if (file.getVersions().contains(ver) && file.getUploadedAt().after(resultDate)) {
+							result = file;
+							resultDate = file.getUploadedAt();
+						}
+					}
+				}			
 			}			
+		}
+		
+		if (result != null) {
+			return result;
 		}
 		
 		System.out.println("Error! Mod " +  getName() + " did not contain requested version. Available:");
